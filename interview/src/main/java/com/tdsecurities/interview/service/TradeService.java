@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class TradeService {
-     
+    private static Logger LOGGER = LoggerFactory.getLogger(TradeService.class);
     @Autowired
     TradeRepository repository;
 
@@ -33,6 +35,7 @@ public class TradeService {
             });
             return tradeList;
         } else {
+            LOGGER.info("No Trade details available");
             return new ArrayList<TradeEntity>();
         }
     }
