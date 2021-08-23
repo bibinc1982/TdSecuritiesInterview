@@ -2,6 +2,7 @@ package com.tdsecurities.interview.service;
 
 import com.tdsecurities.interview.entity.TradeEntity;
 import com.tdsecurities.interview.repository.TradeRepository;
+import com.tdsecurities.interview.utils.BreakStatusUtils;
 import com.tdsecurities.interview.utils.TermsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,7 @@ public class TradeService {
      
     @Autowired
     TradeRepository repository;
-    @Autowired
-    TermsUtils termsUtils;
+
      
     public List<TradeEntity> getAllTrade()
     {
@@ -25,9 +25,11 @@ public class TradeService {
         if(tradeList.size() > 0) {
             tradeList.stream().forEach(tradeEntity -> {
                 if (tradeEntity.getValuationEntity() != null) {
-                    tradeEntity.setMsPc(tradeEntity.getValuationEntity().getUqlOcMmbMs() - tradeEntity.getValuationEntity().getUqlOcMmbMsPc());
+                    long msPc=tradeEntity.getValuationEntity().getUqlOcMmbMs() - tradeEntity.getValuationEntity().getUqlOcMmbMsPc();
+                    tradeEntity.setMsPc(msPc);
+                    tradeEntity.setBreakStatus(BreakStatusUtils.findBreakStatus(msPc));
                 }
-                tradeEntity.setTerm(termsUtils.findDifference(tradeEntity.getMaturityDate(),new Date()));
+                tradeEntity.setTerm(TermsUtils.findDifference(tradeEntity.getMaturityDate(),new Date()));
             });
             return tradeList;
         } else {
